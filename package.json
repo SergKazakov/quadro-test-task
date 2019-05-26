@@ -1,0 +1,91 @@
+{
+  "name": "quadro-test-task",
+  "private": true,
+  "scripts": {
+    "start": "NODE_ENV=production node -r dotenv-safe/config ./src",
+    "dev": "nodemon -r dotenv-safe/config --watch ./src --inspect ./src",
+    "test": "eslint --fix .",
+    "knex": "node -r dotenv-safe/config ./node_modules/knex/bin/cli.js",
+    "migrate:create": "npm run knex -- migrate:make --knexfile ./src/knexfile.js",
+    "migrate:up": "npm run knex -- migrate:latest --knexfile ./src/knexfile.js",
+    "migrate:down": "npm run knex -- migrate:rollback --knexfile ./src/knexfile.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "xo/esnext",
+      "plugin:unicorn/recommended",
+      "plugin:prettier/recommended",
+      "plugin:import/recommended"
+    ],
+    "rules": {
+      "unicorn/filename-case": [
+        "error",
+        {
+          "case": "camelCase"
+        }
+      ],
+      "unicorn/prevent-abbreviations": "off",
+      "import/order": [
+        "error",
+        {
+          "newlines-between": "always"
+        }
+      ],
+      "camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ]
+    },
+    "overrides": [
+      {
+        "files": "src/migrations/*.js",
+        "rules": {
+          "unicorn/filename-case": "off"
+        }
+      }
+    ]
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "semi": false
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-xo": "^0.26.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-unicorn": "^8.0.2",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.17.1"
+  },
+  "dependencies": {
+    "@hapi/joi": "^15.0.3",
+    "dotenv-safe": "^6.1.0",
+    "knex": "^0.16.5",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-compose": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "merge-descriptors": "^1.0.1",
+    "mysql2": "^1.6.5",
+    "qs": "^6.7.0",
+    "uuid": "^3.3.2"
+  }
+}
