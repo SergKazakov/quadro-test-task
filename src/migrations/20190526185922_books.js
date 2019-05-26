@@ -2,7 +2,7 @@ exports.up = knex =>
   knex.raw(
     `
       create table books(
-        id binary(16) not null default (uuid_to_bin(uuid(), 1)) primary key,
+        id binary(16) not null default (uuid_to_bin(uuid())) primary key,
         title text not null,
         description text not null,
         image text,
