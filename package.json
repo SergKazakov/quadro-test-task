@@ -83,7 +83,9 @@
     "koa-bodyparser": "^4.2.1",
     "koa-compose": "^4.1.0",
     "koa-router": "^7.4.0",
+    "merge-descriptors": "^1.0.1",
     "mysql2": "^1.6.5",
+    "qs": "^6.7.0",
     "uuid": "^3.3.2"
   }
 }
