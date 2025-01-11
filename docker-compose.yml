@@ -1,0 +1,14 @@
+services:
+  pg:
+    image: postgres:18.4-alpine3.24
+    environment:
+      POSTGRES_DB: quadro
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./src/migrations:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/18/docker
+
+volumes:
+  pg_data:
