@@ -1,91 +1,36 @@
 {
-  "name": "quadro-test-task",
-  "private": true,
   "scripts": {
-    "start": "NODE_ENV=production node -r dotenv-safe/config ./src",
-    "dev": "nodemon -r dotenv-safe/config --watch ./src --inspect ./src",
-    "test": "eslint --fix .",
-    "knex": "node -r dotenv-safe/config ./node_modules/knex/bin/cli.js",
-    "migrate:create": "npm run knex -- migrate:make --knexfile ./src/knexfile.js",
-    "migrate:up": "npm run knex -- migrate:latest --knexfile ./src/knexfile.js",
-    "migrate:down": "npm run knex -- migrate:rollback --knexfile ./src/knexfile.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "xo/esnext",
-      "plugin:unicorn/recommended",
-      "plugin:prettier/recommended",
-      "plugin:import/recommended"
-    ],
-    "rules": {
-      "unicorn/filename-case": [
-        "error",
-        {
-          "case": "camelCase"
-        }
-      ],
-      "unicorn/prevent-abbreviations": "off",
-      "import/order": [
-        "error",
-        {
-          "newlines-between": "always"
-        }
-      ],
-      "camelcase": [
-        "error",
-        {
-          "properties": "never"
-        }
-      ]
-    },
-    "overrides": [
-      {
-        "files": "src/migrations/*.js",
-        "rules": {
-          "unicorn/filename-case": "off"
-        }
-      }
-    ]
+    "dev": "NODE_ENV=development node --env-file-if-exists=.env --watch ./src/index.mts",
+    "start": "NODE_ENV=production node --env-file-if-exists=.env ./src/index.mts",
+    "test": "vitest run"
   },
   "prettier": {
-    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "experimentalOperatorPosition": "start",
+    "objectWrap": "collapse",
     "semi": false
   },
-  "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^4.3.0",
-    "eslint-config-xo": "^0.26.0",
-    "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-unicorn": "^8.0.2",
-    "husky": "^2.3.0",
-    "lint-staged": "^8.1.7",
-    "nodemon": "^1.19.1",
-    "prettier": "^1.17.1"
-  },
   "dependencies": {
-    "@hapi/joi": "^15.0.3",
-    "dotenv-safe": "^6.1.0",
-    "knex": "^0.16.5",
-    "koa": "^2.7.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-compose": "^4.1.0",
-    "koa-router": "^7.4.0",
-    "merge-descriptors": "^1.0.1",
-    "mysql2": "^1.6.5",
-    "qs": "^6.7.0",
-    "uuid": "^3.3.2"
+    "@koa/bodyparser": "^6.1.0",
+    "@koa/router": "^15.7.0",
+    "drizzle-orm": "^0.45.3",
+    "envalid": "^8.2.0",
+    "joi": "18.2.9",
+    "koa": "^3.2.1",
+    "pg": "^8.23.1",
+    "qs": "^6.16.0"
+  },
+  "devDependencies": {
+    "@skazakov/eslint-config": "git+https://gist.github.com/23524f9406ff30a6924ca01462caa50a.git",
+    "@types/koa": "^3.0.3",
+    "@types/node": "^26.6.4",
+    "@types/pg": "^8.23.1",
+    "axios": "^1.20.0",
+    "eslint": "^10.12.0",
+    "lefthook": "^2.2.0",
+    "prettier": "^3.9.9",
+    "testcontainers": "^12.2.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
   }
 }
