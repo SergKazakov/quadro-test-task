@@ -1,10 +1,13 @@
-import Joi from "joi"
+import { type RouterContext } from "@koa/router"
+import Joi, { type NumberSchema } from "joi"
 
 const MIN_INT_4 = -(2 ** 31)
 
 const MAX_INT_4 = -MIN_INT_4 - 1
 
-const joi = Joi.defaults(s => s.options({ stripUnknown: true })).extend({
+const joi: typeof Joi & { int4(): NumberSchema } = Joi.defaults(s =>
+  s.options({ stripUnknown: true }),
+).extend({
   type: "int4",
   base: Joi.number().integer(),
   messages: { int4: "{{#label}} must be an int4" },
@@ -14,7 +17,8 @@ const joi = Joi.defaults(s => s.options({ stripUnknown: true })).extend({
       : { value, errors: helpers.error("int4") },
 })
 
-export const validateId = ctx => joi.int4().validateAsync(ctx.params.id)
+export const validateId = (ctx: RouterContext) =>
+  joi.int4().validateAsync(ctx.params.id)
 
 const stringSchema = joi.string().trim()
 
@@ -58,7 +62,7 @@ export const schemaToGetBooks = joi.object({
       joi
         .array()
         .ordered(
-          joi.valid("title", "description", "image").required(),
+          joi.valid("id", "title", "description", "image").required(),
           joi.valid("asc", "desc").required(),
         ),
     )
