@@ -1,10 +1,11 @@
+import { type Middleware } from "@koa/router"
 import { Op } from "@sequelize/core"
 import qs from "qs"
 
-import { schemaToGetBooks } from "../joi.mjs"
-import { Book } from "../models.mjs"
+import { schemaToGetBooks } from "../joi.mts"
+import { Book } from "../models.mts"
 
-export const getAllBooks = async ctx => {
+export const getAllBooks: Middleware = async ctx => {
   const {
     page,
     perPage,

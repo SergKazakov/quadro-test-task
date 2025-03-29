@@ -1,10 +1,13 @@
+import { type AddressInfo } from "node:net"
 import { promisify } from "node:util"
 
 import { PostgreSqlContainer } from "@testcontainers/postgresql"
 import axios from "axios"
 import { afterAll, expect, it } from "vitest"
 
-const container = await new PostgreSqlContainer("postgres:17.2")
+import { type Author, type Book } from "./models.mts"
+
+const container = await new PostgreSqlContainer("postgres:17.4")
   .withCopyDirectoriesToContainer([
     { source: "./src/migrations", target: "/docker-entrypoint-initdb.d" },
   ])
@@ -12,30 +15,30 @@ const container = await new PostgreSqlContainer("postgres:17.2")
 
 process.env.__PG_URL__ = container.getConnectionUri()
 
-const { server } = await import("./server.mjs")
+const { server } = await import("./server.mts")
 
 await promisify(cb => server.listen(cb))()
 
 afterAll(async () => {
-  const { sequelize } = await import("./models.mjs")
+  const { sequelize } = await import("./models.mts")
 
   await Promise.all([
     container.stop(),
     sequelize.close(),
-    promisify(cb => server.close(cb))(),
+    promisify<void>(cb => server.close(cb))(),
   ])
 })
 
 const client = axios.create({
-  baseURL: `http://127.0.0.1:${server.address().port}/api`,
+  baseURL: `http://127.0.0.1:${(server.address() as AddressInfo).port}/api`,
   validateStatus: () => true,
 })
 
 it("should pass", async () => {
-  const { data: author, status: status0 } = await client.post("/authors", {
-    firstName: "foo",
-    lastName: "foo",
-  })
+  const { data: author, status: status0 } = await client.post<Author>(
+    "/authors",
+    { firstName: "foo", lastName: "foo" },
+  )
 
   const schema = { id: expect.any(Number) }
 
@@ -49,7 +52,7 @@ it("should pass", async () => {
 
   const baseUrl = "/books"
 
-  const { data: error, status: status1 } = await client.post(baseUrl, {
+  const { data: error, status: status1 } = await client.post<string>(baseUrl, {
     authorId: 0,
     title: "foo",
     description: "foo",
@@ -61,11 +64,10 @@ it("should pass", async () => {
 
   expect(status1).toBe(404)
 
-  const { data: createdBook, status: status2 } = await client.post(baseUrl, {
-    authorId: author.id,
-    title: "foo",
-    description: "foo",
-  })
+  const { data: createdBook, status: status2 } = await client.post<Book>(
+    baseUrl,
+    { authorId: author.id, title: "foo", description: "foo" },
+  )
 
   expect(createdBook).toMatchObject({
     ...schema,
@@ -89,7 +91,7 @@ it("should pass", async () => {
   for (const [id, expected, expectedStatus] of [
     [0, { message: bookNotFound }, 404],
     [createdBook.id, schema, 200],
-  ]) {
+  ] as [number, object, number][]) {
     const { data, status } = await client(`${baseUrl}/${id}`)
 
     expect(data).toMatchObject(expected)
@@ -101,7 +103,7 @@ it("should pass", async () => {
     [0, {}, { message: bookNotFound }, 404],
     [createdBook.id, { authorId: 0 }, { message: authorNotFound }, 404],
     [createdBook.id, {}, "", 204],
-  ]) {
+  ] as [number, object, object, number][]) {
     const { data: d, status } = await client.put(`${baseUrl}/${id}`, {
       image: "foo",
       ...data,
@@ -115,10 +117,14 @@ it("should pass", async () => {
   for (const [expected, expectedStatus] of [
     ["", 204],
     [{ message: bookNotFound }, 404],
-  ]) {
+  ] as [string | object, number][]) {
     const { data, status } = await client.delete(`${baseUrl}/${createdBook.id}`)
 
-    expect(data).toMatchObject(expected)
+    if (typeof expected === "string") {
+      expect(data).toBe(expected)
+    } else {
+      expect(data).toMatchObject(expected)
+    }
 
     expect(status).toBe(expectedStatus)
   }

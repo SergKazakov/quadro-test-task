@@ -1,7 +1,10 @@
-import { schemaToCreateBook, schemaToUpdateBook, validateId } from "../joi.mjs"
-import { Book } from "../models.mjs"
+import { type Middleware } from "@koa/router"
+import { ForeignKeyConstraintError } from "@sequelize/core"
 
-export const createOrUpdateBook = async ctx => {
+import { schemaToCreateBook, schemaToUpdateBook, validateId } from "../joi.mts"
+import { Book } from "../models.mts"
+
+export const createOrUpdateBook: Middleware = async ctx => {
   const id = await validateId(ctx)
 
   const body = await (
@@ -23,7 +26,10 @@ export const createOrUpdateBook = async ctx => {
       ctx.body = null
     }
   } catch (error) {
-    if (error instanceof Error && error.index === "books_author_id_fkey") {
+    if (
+      error instanceof ForeignKeyConstraintError &&
+      error.index === "books_author_id_fkey"
+    ) {
       ctx.throw(404, "Автор не существует")
     }
 

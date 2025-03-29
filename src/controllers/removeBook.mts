@@ -1,7 +1,9 @@
-import { validateId } from "../joi.mjs"
-import { Book } from "../models.mjs"
+import { type Middleware } from "@koa/router"
 
-export const removeBook = async ctx => {
+import { validateId } from "../joi.mts"
+import { Book } from "../models.mts"
+
+export const removeBook: Middleware = async ctx => {
   const rowCount = await Book.destroy({ where: { id: await validateId(ctx) } })
 
   if (rowCount === 0) {
