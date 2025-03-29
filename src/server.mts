@@ -3,7 +3,7 @@ import { createServer } from "node:http"
 import Joi from "joi"
 import Koa, { HttpError } from "koa"
 
-import { router } from "./router.mjs"
+import { router } from "./router.mts"
 
 export const server = createServer(
   new Koa()
