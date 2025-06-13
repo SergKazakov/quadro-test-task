@@ -8,15 +8,11 @@ export const createOrUpdateBook: Middleware = async ctx => {
   const id = await validateId(ctx)
 
   const body = await (
-    id === undefined ? schemaToCreateBook : schemaToUpdateBook
+    id ? schemaToUpdateBook : schemaToCreateBook
   ).validateAsync(ctx.request.body)
 
   try {
-    if (id === undefined) {
-      ;[ctx.body] = await db.insert(books).values(body).returning()
-
-      ctx.status = 201
-    } else {
+    if (id) {
       const rows = await db
         .update(books)
         .set({ ...body, updatedAt: sql`now()` })
@@ -28,6 +24,10 @@ export const createOrUpdateBook: Middleware = async ctx => {
       }
 
       ctx.body = null
+    } else {
+      ;[ctx.body] = await db.insert(books).values(body).returning()
+
+      ctx.status = 201
     }
   } catch (error) {
     if (

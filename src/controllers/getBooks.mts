@@ -14,12 +14,12 @@ export const getBooks: Middleware = async ctx => {
   } = await schemaToGetBooks.validateAsync(qs.parse(ctx.querystring))
 
   const where = and(
-    createdAtGte ? gte(books.createdAt, createdAtGte) : undefined,
-    createdAtLte ? lte(books.createdAt, createdAtLte) : undefined,
-    authorId ? eq(books.authorId, authorId) : undefined,
-    title ? ilike(books.title, `%${title}%`) : undefined,
-    description ? ilike(books.description, `%${description}%`) : undefined,
-    image ? ilike(books.image, `%${image}%`) : undefined,
+    createdAtGte && gte(books.createdAt, createdAtGte),
+    createdAtLte && lte(books.createdAt, createdAtLte),
+    authorId && eq(books.authorId, authorId),
+    title && ilike(books.title, `%${title}%`),
+    description && ilike(books.description, `%${description}%`),
+    image && ilike(books.image, `%${image}%`),
   )
 
   const orderBy = (sorting as [PgColumn, string][]).map(

@@ -29,7 +29,7 @@ it("should pass", async () => {
     typeof authors.$inferSelect
   >("/authors", { firstName: "foo", lastName: "foo" })
 
-  const schema = { id: expect.any(Number) }
+  const schema = { id: expect.any(String) }
 
   expect(author).toMatchObject({
     ...schema,
@@ -41,8 +41,10 @@ it("should pass", async () => {
 
   const baseUrl = "/books"
 
+  const nilUUID = "00000000-0000-0000-0000-000000000000"
+
   const { data: error, status: status1 } = await client.post(baseUrl, {
-    authorId: 0,
+    authorId: nilUUID,
     title: "foo",
     description: "foo",
   })
@@ -59,7 +61,7 @@ it("should pass", async () => {
 
   expect(book).toMatchObject({
     ...schema,
-    authorId: expect.any(Number),
+    authorId: expect.any(String),
     title: expect.any(String),
     description: expect.any(String),
     image: null,
@@ -102,9 +104,9 @@ it("should pass", async () => {
   const bookNotFound = "Книга не существует"
 
   for (const [id, expected, expectedStatus] of [
-    [0, { message: bookNotFound }, 404],
+    [nilUUID, { message: bookNotFound }, 404],
     [book.id, schema, 200],
-  ] as [number, object, number][]) {
+  ] as [string, object, number][]) {
     const { data, status } = await client(`${baseUrl}/${id}`)
 
     expect(data).toMatchObject(expected)
@@ -113,10 +115,10 @@ it("should pass", async () => {
   }
 
   for (const [id, data, expected, expectedStatus] of [
-    [0, {}, { message: bookNotFound }, 404],
-    [book.id, { authorId: 0 }, { message: authorNotFound }, 404],
+    [nilUUID, {}, { message: bookNotFound }, 404],
+    [book.id, { authorId: nilUUID }, { message: authorNotFound }, 404],
     [book.id, {}, "", 204],
-  ] as [number, object, object, number][]) {
+  ] as [string, object, object, number][]) {
     const { data: d, status } = await client.put(`${baseUrl}/${id}`, {
       image: "foo",
       ...data,

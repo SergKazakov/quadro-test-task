@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres"
 import * as t from "drizzle-orm/pg-core"
 
-const withId = { id: t.integer().generatedAlwaysAsIdentity().primaryKey() }
+const withId = { id: t.uuid("id").primaryKey() }
 
 const withTimestamp = {
   createdAt: t
@@ -25,7 +25,7 @@ export const books = t.pgTable("books", {
   ...withId,
   ...withTimestamp,
   authorId: t
-    .integer("author_id")
+    .uuid("author_id")
     .notNull()
     .references(() => authors.id),
   title: t.text().notNull(),
