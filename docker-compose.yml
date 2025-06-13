@@ -1,6 +1,6 @@
 services:
   pg:
-    image: postgres:17.4-alpine
+    image: postgres:18beta1-alpine
     environment:
       POSTGRES_DB: quadro
       POSTGRES_PASSWORD: postgres
@@ -8,7 +8,7 @@ services:
       - 5432:5432
     volumes:
       - ./src/migrations:/docker-entrypoint-initdb.d
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/18/docker
 
 volumes:
   pg_data:

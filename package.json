@@ -10,32 +10,35 @@
     "objectWrap": "collapse",
     "semi": false
   },
+  "overrides": {
+    "typescript": "$typescript"
+  },
   "dependencies": {
     "@koa/bodyparser": "^6.0.0",
-    "@koa/router": "^13.1.0",
-    "drizzle-orm": "^0.44.2",
-    "joi": "17.13.3",
-    "koa": "^3.0.0",
-    "pg": "^8.16.0",
+    "@koa/router": "^14.0.0",
+    "drizzle-orm": "^0.44.4",
+    "joi": "18.0.0",
+    "koa": "^3.0.1",
+    "pg": "^8.16.3",
     "qs": "^6.14.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@evilmartians/lefthook-installer": "^1.11.13",
-    "@testcontainers/postgresql": "^11.0.3",
-    "@types/koa": "^2.15.0",
+    "@eslint/js": "^9.33.0",
+    "@evilmartians/lefthook-installer": "^1.12.2",
+    "@testcontainers/postgresql": "^11.5.1",
+    "@types/koa": "^3.0.0",
     "@types/koa__router": "^12.0.4",
-    "@types/node": "^24.0.1",
-    "axios": "^1.9.0",
-    "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.5",
+    "@types/node": "^24.2.1",
+    "axios": "^1.11.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-config-xo": "^0.45.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.4.1",
-    "eslint-plugin-unicorn": "^59.0.1",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0",
-    "vitest": "^3.2.3"
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0",
+    "vitest": "^3.2.4"
   }
 }
