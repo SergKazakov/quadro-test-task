@@ -1,26 +1,14 @@
 import { type RouterContext } from "@koa/router"
-import Joi, { type NumberSchema } from "joi"
+import Joi from "joi"
 
-const MIN_INT_4 = -(2 ** 31)
+const joi = Joi.defaults(s => s.options({ stripUnknown: true }))
 
-const MAX_INT_4 = -MIN_INT_4 - 1
-
-const joi: typeof Joi & { int4(): NumberSchema } = Joi.defaults(s =>
-  s.options({ stripUnknown: true }),
-).extend({
-  type: "int4",
-  base: Joi.number().integer(),
-  messages: { int4: "{{#label}} must be an int4" },
-  validate: (value, helpers) =>
-    value >= MIN_INT_4 && value <= MAX_INT_4
-      ? { value }
-      : { value, errors: helpers.error("int4") },
-})
-
-export const validateId = (ctx: RouterContext) =>
-  joi.int4().validateAsync(ctx.params.id)
+const uuidSchema = joi.string().uuid()
 
 const stringSchema = joi.string().trim()
+
+export const validateId = (ctx: RouterContext) =>
+  uuidSchema.validateAsync(ctx.params.id)
 
 export const schemaToCreateAuthor = joi.object({
   firstName: stringSchema.required(),
@@ -28,7 +16,7 @@ export const schemaToCreateAuthor = joi.object({
 })
 
 export const schemaToCreateBook = joi.object({
-  authorId: joi.int4().required(),
+  authorId: uuidSchema.required(),
   title: stringSchema.required(),
   description: stringSchema.required(),
   image: stringSchema,
@@ -36,7 +24,7 @@ export const schemaToCreateBook = joi.object({
 
 export const schemaToUpdateBook = joi
   .object({
-    authorId: joi.int4(),
+    authorId: uuidSchema,
     title: stringSchema,
     description: stringSchema,
     image: stringSchema.allow(null),
@@ -50,7 +38,7 @@ export const schemaToGetBooks = joi.object({
     .object({
       createdAtGte: joi.date().iso(),
       createdAtLte: joi.date().iso(),
-      authorId: joi.int4(),
+      authorId: uuidSchema,
       title: stringSchema,
       description: stringSchema,
       image: stringSchema,
